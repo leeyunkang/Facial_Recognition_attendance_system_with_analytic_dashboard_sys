@@ -1,0 +1,255 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+<html>
+<head>
+    <title>Edit Profile</title>
+    <style>
+
+      .navbar {
+            background-color: transparent;
+          }
+      
+          .navbar-nav .nav-link {
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-right: 20px;
+            transition: color 0.3s;
+          }
+      
+          .navbar-nav .nav-link:hover {
+            color: #FF5733;
+          }
+      
+          /* Form styles */
+          .profile-form {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            z-index: 1;
+            margin-top: 20px; /* Adjust the top margin */
+          }
+      
+          .profile-form label {
+            font-weight: bold;
+          }
+      
+          .profile-form .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 5px;
+          }
+      
+      
+      
+          
+          .buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          
+      }
+      
+      .button {
+          display: inline-block;
+          padding: 15px 30px; /* Increase padding for bigger buttons */
+          background-color: transparent; /* Set background color to transparent */
+          border: 2px solid white; /* Add a white border to the buttons */
+          color: white;
+          text-decoration: none;
+          border-radius: 100px;
+          font-size: 1.2rem;
+          
+      
+          transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+      }
+      
+      .button:hover {
+          background-color: rgba(255, 255, 255, 0.2); /* Light transparent background on hover */
+          transform: scale(1.05); /* Scale the button on hover */
+          color: #f39c12; /* Change text color on hover */
+          
+      }
+      
+      </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg ">
+    <!-- Navbar content here -->
+  </nav>
+    <h1>Edit Profile</h1>
+
+
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form class="profile-form" method="POST">
+    <form method="POST" action="{{ url_for('views.edit_employee') }}">
+        <div class="form-group">
+            <label for="employee_id">Employee Id</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_id"
+              name="employee_id"
+              placeholder="{{session.get("employee_id")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_name">Employee Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_name"
+              name="employee_name"
+              placeholder="{{session.get("employee_name")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_email">Employee Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_email"
+              name="employee_email"
+              placeholder="{{session.get("employee_email")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_ic">Employee Ic</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_ic"
+              name="employee_ic"
+              placeholder="{{session.get("employee_ic")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_mobile">Employee's Mobile Number</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_mobile"
+              name="employee_mobile"
+              placeholder="{{session.get("employee_mobile")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_transportation_expense">Employee's Transportation Expense</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_transportation_expense"
+              name="employee_transportation_expense"
+              placeholder="{{session.get("employee_transportation_expense")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_distance_to_work">Employee Distance to Work</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_distance_to_work"
+              name="employee_distance_to_work"
+              placeholder="{{session.get("employee_distance_to_work")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_daily_work_load">Employee Daily Work Load</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_daily_work_load"
+              name="employee_daily_work_load"
+              placeholder="{{session.get("employee_daily_work_load")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_bmi">BMI</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_bmi"
+              name="employee_bmi"
+              placeholder="{{session.get("employee_bmi")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_education">Employee's Education</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_education"
+              name="employee_education"
+              placeholder="{{session.get("employee_education")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_pets">Employee Pets</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_pets"
+              name="employee_pets"
+              placeholder="{{session.get("employee_pets")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_address">Employee Address</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_address"
+              name="employee_address"
+              placeholder="{{session.get("employee_address")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_work_position">Employee's Work Position</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_work_position"
+              name="employee_work_position"
+              placeholder="{{session.get("employee_work_position")}}"
+            />
+        </div>
+        <div class="form-group">
+            <label for="employee_children">Employee's Children</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employee_children"
+              name="employee_children"
+              placeholder="{{session.get("employee_children")}}"
+            />
+          </div>
+          
+       
+        <button type="submit" class="button">Update Profile</button>
+    </form>
+  </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
+    
+    
+    
+    
+    
+    {% endblock %}

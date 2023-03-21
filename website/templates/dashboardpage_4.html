@@ -1,0 +1,382 @@
+{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block content
+    %}
+<!--  -->
+    <link rel="stylesheet" href="static/main.css">
+
+
+<!-- Second Graph  -->
+<!-- Add the Chart.js library for bar chart support -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1"></script>
+
+<!-- Add a container for the bar chart -->
+
+<p></p>
+<div class="site-header-logo">
+    <h1 class="text-center">
+        Company Attendance Dashboard
+    </h1>
+</div>
+<p></p>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+            body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+#info-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  #info-table th, #info-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+
+  #info-table th {
+    background-color: #f2f2f2;
+  }
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  width: 1000px;
+}
+.transparent-card {
+            position: absolute;
+            top: 90px;
+            left: 250px;
+            width: 1480px;
+            height: 900px;
+            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
+            z-index: -1; /* Place the transparent card behind other content */
+            border-radius: 40px;
+
+        }
+.chart-container {
+    display: flex;
+  justify-content: center;
+  align-items: center;
+    width: 50%; /* Adjust the width as needed */
+  height: 50%;  /* Adjust the height as needed */
+  margin: 0 auto;
+}
+.nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.nav-list li {
+    text-align: center;
+    margin-right: 18px; /* Adjust spacing between items */
+}
+
+.nav-label {
+    display: block;
+    font-size: 20px; /* Adjust font size as needed */
+}
+      canvas {
+        width: 100%;
+  height: 100%;
+      }
+    </style>
+
+  <meta charset="UTF-8">
+  <title>Side Navigation Bar</title>
+  <link rel="stylesheet" href="static/styles.css">
+  <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sidebar">
+        
+      <ul>
+        <li><a href="/dashboardpage_1"><i class="fas fa-home"></i>  <span class="nav-label">Overall</span></a></li>
+        <li><a href="/dashboardpage_3"><i class="fas fa-database"></i><span class="nav-label">Department Performance</span></a></li>
+        <li><a href="/dashboardpage_2"><i class="fas fa-address-card"></i><span class="nav-label">Personal Performance</span></a></li>
+        <li><a href="/dashboardpage_4"><i class="fas fa-project-diagram"></i><span class="nav-label">Attendance Checker</span></a></li>
+
+       
+    </ul> 
+
+   
+
+
+    </div>
+
+</div>
+
+
+<div class="transparent-card"></div>
+
+<ul id="checklist"></ul>
+<p></p>
+<p></p>
+<div class="card">
+  <div class="card-header">
+    <h2>Check the attendance of employees who did not attend on a specific date</h2>
+  </div>
+  <div class="card-body">
+    <div id="myDiv">
+      <form action="process_date.py" method="post">
+        <select name="daySelect" id="daySelect" onchange="refreshChecklist()"></select>
+        <select name="monthSelect" id="monthSelect" onchange="refreshChecklist()"></select>
+        <select name="yearSelect" id="yearSelect" onchange="refreshChecklist()"></select>
+      </form>
+    </div>
+    <div id="table-container" class="table-container">
+        <table id="info-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Attend</th>
+              <th>Transportation Expense</th>
+              <th>Distance to Work</th>
+              <th>Age</th>
+              <th>Body Mass Index</th>
+              <th>Education</th>
+              <th>Children</th>
+              <th>Pets</th>
+              <th>Work Position</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+<script>
+  var daySelect = document.getElementById("daySelect");
+  var monthSelect = document.getElementById("monthSelect");
+  var yearSelect = document.getElementById("yearSelect");
+
+  var minDate = new Date("07/06/2015");
+  var maxDate = new Date("31/05/2018");
+
+  function populateDayOptions() {
+    daySelect.innerHTML = "";
+    var month = monthSelect.value;
+    var year = yearSelect.value;
+    var numDays = new Date(year, month, 0).getDate();
+
+    for (var i = 1; i <= numDays; i++) {
+      var option = document.createElement("option");
+      option.value = i;
+      option.text = i;
+      daySelect.appendChild(option);
+    }
+  }
+
+  function handleSelectionChange() {
+    var day = daySelect.value;
+    var month = monthSelect.value;
+    var year = yearSelect.value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/dashboard", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log("Date selection sent to Python file");
+      }
+    };
+
+    var data = JSON.stringify({ day: day, month: month, year: year });
+    xhr.send(data);
+  }
+
+  daySelect.addEventListener("change", handleSelectionChange);
+  monthSelect.addEventListener("change", populateDayOptions);
+  yearSelect.addEventListener("change", populateDayOptions);
+
+  for (var i = 1; i <= 12; i++) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.text = i;
+    monthSelect.appendChild(option);
+  }
+
+  for (var i = 2015; i <= 2018; i++) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.text = i;
+    yearSelect.appendChild(option);
+  }
+
+  daySelect.value = minDate.getDate();
+  monthSelect.value = minDate.getMonth() + 1;
+  yearSelect.value = minDate.getFullYear();
+
+  populateDayOptions();
+
+  function disableInvalidDates() {
+    var selectedDate = new Date(yearSelect.value, monthSelect.value - 1, daySelect.value);
+
+    if (selectedDate < minDate || selectedDate > maxDate) {
+      daySelect.value = minDate.getDate();
+      monthSelect.value = minDate.getMonth() + 1;
+      yearSelect.value = minDate.getFullYear();
+    }
+  }
+
+  daySelect.addEventListener("change", disableInvalidDates);
+  monthSelect.addEventListener("change", disableInvalidDates);
+  yearSelect.addEventListener("change", disableInvalidDates);
+
+  // New function to get the selected date
+  function getSelectedDate() {
+        var day = daySelect.value;
+        var month = monthSelect.value;
+        var year = yearSelect.value;
+        if (day <= 9 && month >= 10){
+          return  year + "-" + month + "-0" +day ;
+        }else if (day <= 9 && month <= 9){
+          return  year + "-0" + month + "-0" +day ;
+        }else if (day >= 10 && month <=9 ){
+          return  year + "-0" + month + "-" +day ;         
+        }else{
+          return  year + "-" + month + "-" +day ;     
+        }
+        
+        
+        // Your logic to process the selected date here
+
+        // Display the selected date in the output element
+        //var outputElement = document.getElementById("outputdate");
+        //outputElement.textContent = "Selected date: " + day + "/" + month + "/" + year;
+  }
+
+
+  function refreshChecklist2() {
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => {
+    const selectedDate = getSelectedDate();
+    const attendList = [];
+    const idSet = new Set();
+    console.log(selectedDate)
+    data.dataset.forEach(dataItem => {
+      const date_in = dataItem["Date"];
+      const id = dataItem["ID"];
+      const attendValue = parseInt(dataItem["Attend"]);
+      idSet.add(id);
+      if (attendValue === 1 && date_in === selectedDate) {
+        attendList.push(id);
+      }
+    });
+    const uniqueIds = Array.from(idSet);
+    console.log(uniqueIds)
+
+    console.log(attendList);
+
+    const displayList = uniqueIds.map(item => {
+        const isTrueIcon = attendList.includes(item);
+        return {
+          id: item,
+          icon: isTrueIcon ? 'trueIcon' : 'falseIcon'
+        };
+      });
+
+      const listContainer = document.getElementById('list-container');
+      listContainer.innerHTML = '';
+
+      displayList.forEach(item => {
+        const listItem = document.createElement('div');
+        listItem.textContent = item.id;
+
+        const icon = document.createElement('span');
+        icon.classList.add(item.icon);
+
+        listItem.prepend(icon); // Use prepend() to insert the icon before the text
+
+        listContainer.appendChild(listItem);
+      });
+    });
+
+}
+
+  function refreshChecklist() {
+  fetch('/api/data')
+    .then(response => response.json())
+    .then(data => {
+      const selectedDate = getSelectedDate();
+      const attendList = new Set();
+
+      data.dataset.forEach(dataItem => {
+        const id = dataItem["ID"];
+        const date_in = dataItem["Date"];
+        const attendValue = parseInt(dataItem["Attend"]);
+
+        if (attendValue === 1 && date_in === selectedDate) {
+          attendList.add(id);
+        }
+      });
+
+      const tableBody = document.getElementById('table-body');
+      tableBody.innerHTML = '';
+
+      data.dataset.forEach(dataItem => {
+        const id = dataItem["ID"];
+        const date = dataItem["Date"];
+        const attend = dataItem["Attend"];
+        const transportationExpense = dataItem["Transportation Expense"];
+        const distanceToWork = dataItem["Distance to Work"];
+        const age = dataItem["Age"];
+        const bodyMassIndex = dataItem["Body Mass Index"];
+        const education = dataItem["Education"];
+        const children = dataItem["Children"];
+        const pets = dataItem["Pets"];
+        const workPosition = dataItem["work_position"];
+
+        if (attend === '0' && date === selectedDate) {
+          const tableRow = document.createElement('tr');
+          tableRow.innerHTML = `
+            <td>${id}</td>
+            <td>${date}</td>
+            <td>${attend}</td>
+            <td>${transportationExpense}</td>
+            <td>${distanceToWork}</td>
+            <td>${age}</td>
+            <td>${bodyMassIndex}</td>
+            <td>${education}</td>
+            <td>${children}</td>
+            <td>${pets}</td>
+            <td>${workPosition}</td>
+          `;
+
+          tableBody.appendChild(tableRow);
+        }
+      });
+    });
+}
+  // Call the getSelectedDate function on button click or any other event
+
+
+
+const dateInputday = document.getElementById('daySelect');
+const dateInputmonth = document.getElementById('monthSelect');
+const dateInputyear = document.getElementById('yearSelect');
+
+dateInputday.addEventListener('change', refreshChecklist);
+dateInputmonth.addEventListener('change', refreshChecklist);
+dateInputyear.addEventListener('change', refreshChecklist);
+
+dateInputday.addEventListener('change', refreshChecklist2);
+dateInputmonth.addEventListener('change', refreshChecklist2);
+dateInputyear.addEventListener('change', refreshChecklist2);
+</script>
+
+
+
+
+
+
+{% endblock %}
+    

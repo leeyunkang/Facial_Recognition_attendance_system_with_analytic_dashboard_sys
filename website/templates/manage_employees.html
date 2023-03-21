@@ -1,0 +1,219 @@
+{% extends "base.html" %} {% block title %}Manage Employee{% endblock %} {% block content
+    %}
+    <link rel="stylesheet" href="static/main.css">
+
+    <head>
+      <title>Employee Management</title>
+      <br>
+      <style>
+        /* Add some basic styling to the form */
+
+        table {
+          margin-left: 0; /* Align the table to the left */
+  border-collapse: collapse;
+  width: 100%;
+}
+        /* Add some basic styling to the input fields */
+        input[type=text], input[type=email], input[type=tel] {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          box-sizing: border-box;
+          border: 2px solid #ccc;
+          border-radius: 4px;
+        }
+        .table-container {
+          background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
+      margin-top: 20px; /* Adjust the top margin */
+      text-align: center;
+      margin: 0 auto;
+      width: 140%;
+      left: -300px;
+      top: 20px;
+    }
+
+    .transparent-card {
+            position: absolute;
+            top: 100px;
+            left: 120px;
+            width: 1650px;
+            height: 1200px;
+            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
+            z-index: -1; /* Place the transparent card behind other content */
+            border-radius: 40px;
+        }
+
+    .table-container .form-control {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      
+      border-radius: 5px;
+    }
+        
+    .buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    
+}
+
+    .button {
+    display: inline-block;
+    padding: 15px 30px; /* Increase padding for bigger buttons */
+    background-color: transparent; /* Set background color to transparent */
+    border: 2px solid white; /* Add a white border to the buttons */
+    color: white;
+    text-decoration: none;
+    border-radius: 100px;
+    font-size: 1.2rem;
+    
+
+    transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+}
+
+.button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Light transparent background on hover */
+    transform: scale(1.05); /* Scale the button on hover */
+    color: #f39c12; /* Change text color on hover */
+    
+}
+
+
+        /* Add some basic styling to the table */
+        table {
+        
+          border-collapse: collapse;
+          width: 100%;
+        }
+        th, td {
+            border: 1px solid rgb(11, 2, 2);
+            padding: 8px;
+        }
+        th {
+          background-color: transparent;
+          color: white;
+        }
+        
+        tr:nth-child(even) {
+          background-color:transparent
+        }
+        
+        /* Add some basic styling to the search bar */
+        #search-bar {
+          margin-top: 20px;
+          margin-bottom: 20px;
+          width: 50%;
+          padding: 12px 20px;
+          border: 2px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+        }
+        
+        /* Add some basic styling to the add button */
+        #add-button {
+          float: right;
+          margin-top: -40px;
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+      </style>
+    </head>
+    <body>
+                      <div class="transparent-card"></div>
+
+      <div class="site-header-logo">
+        <h1 class="text-center">
+      <h1>Employee Management System</h1>
+    </h1>
+  </div>
+
+      <br>
+      <br>
+      <form method="POST">
+        <a href="{{ url_for('views.sign_up_employee') }}"><button  type="submit" class="button" name="add_employee" value="submit"   >Add new employee</button></a>
+    </form>
+      
+     
+      <form class="table-container">
+      <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>IC</th>
+                <th>Mobile Number</th>
+                <th>Transportation Expense</th>
+                <th>Distance to Work</th>
+                <th>Daily Work Load</th>
+                <th>BMI</th>
+                <th>Education</th>
+                <th>Pets</th>
+                <th>Address</th>
+                <th>Work Position</th>
+                <th>Children</th> <td>
+
+              </td>
+                <!-- Add more column headers here if needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                {% for column in row %}
+                <td>{{ column }}</td>
+
+                {% endfor %}
+                <td>
+                  <form method="POST" action="{{ url_for('views.manage_employees') }}">
+                      <input type="hidden"name="employee_id" value="{{ row[0] }}">
+                      <button type="submit"  class="button"name="employee_id" value="{{ row[0] }}">Edit</button>
+                  </form>
+              </td>
+
+              <td>
+                <form method="POST" action="{{ url_for('views.manage_employees') }}">
+                    <input type="hidden"name="action" value="{{ row[0] }}">
+                    <button type="submit" class="button" onclick="showConfirmation()" name="action" value="delete{{ row[0] }}">Delete</button>
+                </form>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </form>
+    </body>
+  
+
+    <script>
+      function showConfirmation() {
+        var result = confirm("Are you sure you want to proceed?");
+        
+        if (result) {
+          // User clicked "OK"
+          alert("You clicked OK!");
+          window.history.back();
+
+          // Perform further actions or redirect
+        } else {
+          // User clicked "Cancel"
+          alert("You clicked Cancel!");
+          document.getElementById("message").innerHTML = "You chose not to proceed.";
+
+          // Perform further actions or redirect
+        }
+      }
+    </script>
+    
+
+{% endblock %}

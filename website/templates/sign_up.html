@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="static/styleshome.css">
+<style>
+  /* Additional styles specific to this page */
+  /* You can add custom styles here */
+
+  /* Additional styles specific to this page */
+  /* You can add custom styles here */
+  .form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    margin-right: 10px;
+    flex-shrink: 0;
+    width: 150px; /* Adjust as needed */
+  }
+
+  .form-group input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+
+  .btn-primary {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 15px 30px; /* Increase padding for bigger buttons */
+    background-color: transparent; /* Set background color to transparent */
+    border: 2px solid white; /* Add a white border to the buttons */
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Light transparent background on hover */
+    transform: scale(1.05); /* Scale the button on hover */
+    color: #f39c12; /* Change text color on hover */
+    
+}
+
+
+
+
+
+
+
+  /* Adjust any other styles as needed */
+
+</style>
+</head>
+<body>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <div class="flash-messages">
+          <ul class="messages">
+              {% for message in messages %}
+                  <li>{{ message }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% endif %}
+{% endwith %}
+<div class="background">
+  <div class="content-signup">
+    <form method="POST" class="sign-up">
+      <h3 align="center">Sign Up</h3>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          id="username"
+          name="username"
+          placeholder="Enter username"
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="text"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Enter email"
+        />
+      </div>
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Enter first name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          name="lastName"
+          placeholder="Enter last name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="icNumber">Identity Card Number</label>
+        <input
+          type="text"
+          class="form-control"
+          id="icNumber"
+          name="icNumber"
+          placeholder="Enter IC Number"
+        />
+      </div>
+      <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input
+          type="text"
+          class="form-control"
+          id="mobileNumber"
+          name="mobileNumber"
+          placeholder="Enter mobile number"
+        />
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input
+          type="text"
+          class="form-control"
+          id="address"
+          name="address"
+          placeholder="Enter address"
+        />
+      </div>
+      <div class="form-group">
+        <label for="registrationCode">Registration Code</label>
+        <input
+          type="text"
+          class="form-control"
+          id="registrationCode"
+          name="registrationCode"
+          placeholder="Enter registration code"
+        />
+      </div>
+      <!-- Repeat similar form-group blocks for other fields -->
+      <div class="form-group">
+        <label for="password1">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password1"
+          name="password1"
+          placeholder="Enter password"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password2">Password (Confirm)</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password2"
+          name="password2"
+          placeholder="Confirm password"
+        />
+      </div>
+      <br />
+      <div>
+        <a href="/login" class="btn btn-primary">Login</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    </form>
+
+
+
+
+
+  </div>
+
+  <div class="ai-images">
+    <img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/Advantages_and_Disadvantages_of_artificial_intelligence.jpg" alt="AI Image 1" class="ai-image" />
+    <img src="https://www.engineersgarage.com/wp-content/uploads/2021/11/TCH36-01-scaled.jpg" alt="AI Image 2" class="ai-image" />
+    <img src="https://s40424.pcdn.co/in/wp-content/uploads/2022/10/What-is-M.Tech-in-Artificial-Intelligence_AI.jpg.optimal.jpg" alt="AI Image 3" class="ai-image" />
+    <img src="https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg" alt="AI Image 4" class="ai-image" />
+  </div>
+
+</div>
+
+
+</body>
+</html>

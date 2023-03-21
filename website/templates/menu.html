@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block title %}Menu{% endblock %} {% block content
+    %}
+
+
+    <style>
+.ai-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+}
+.ai-image {
+    max-width: 1400px;
+    height: auto;
+    margin: 20px;
+    transition: transform 0.3s ease;
+
+}
+
+.ai-image:hover {
+    transform: scale(1.1);
+}
+
+    </style>
+
+    <div class="background">
+
+
+    <div class="ai-images">
+        <img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/Advantages_and_Disadvantages_of_artificial_intelligence.jpg" alt="AI Image 1" class="ai-image" />
+  
+        <img src="https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg" alt="AI Image 4" class="ai-image" />
+    </div>
+</div>
+    
+
+
+
+
+
+
+</div>
+
+
+{% endblock %}
+    

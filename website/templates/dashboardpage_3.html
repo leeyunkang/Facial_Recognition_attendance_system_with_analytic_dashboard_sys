@@ -1,0 +1,708 @@
+{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block content
+    %}
+    <link rel="stylesheet" href="static/main.css">
+    <p></p>
+    <div class="site-header-logo">
+        <h1 class="text-center">
+            Company Attendance Dashboard
+        </h1>
+    </div>
+    <p></p>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+                body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    .table-container {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+.transparent-card {
+            position: absolute;
+            top: 90px;
+            left: 250px;
+            width: 1480px;
+            height: 1150px;
+            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
+            z-index: -1; /* Place the transparent card behind other content */
+            border-radius: 40px;
+
+        }
+
+#position-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#position-table th, #position-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+#position-table th {
+  background-color: #f2f2f2;
+}
+
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px;
+      width: 1000px;
+    }
+    .chart-container {
+        display: flex;
+      justify-content: center;
+      align-items: center;
+        width: 50%; /* Adjust the width as needed */
+      height: 50%;  /* Adjust the height as needed */
+      margin: 0 auto;
+    }
+          canvas {
+            width: 100%;
+      height: 100%;
+          }
+          .nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.nav-list li {
+    text-align: center;
+    margin-right: 18px; /* Adjust spacing between items */
+}
+
+.nav-label {
+    display: block;
+    font-size: 20px; /* Adjust font size as needed */
+}
+          
+        </style>
+
+      <meta charset="UTF-8">
+      <title>Side Navigation Bar</title>
+      <link rel="stylesheet" href="static/styles.css">
+      <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    </head>
+    <body>
+    <div class="wrapper">
+        <div class="sidebar">
+          
+          <ul>
+            <li><a href="/dashboardpage_1"><i class="fas fa-home"></i>  <span class="nav-label">Overall</span></a></li>
+            <li><a href="/dashboardpage_3"><i class="fas fa-database"></i><span class="nav-label">Department Performance</span></a></li>
+            <li><a href="/dashboardpage_2"><i class="fas fa-address-card"></i><span class="nav-label">Personal Performance</span></a></li>
+            <li><a href="/dashboardpage_4"><i class="fas fa-project-diagram"></i><span class="nav-label">Attendance Checker</span></a></li>
+    
+           
+           
+        </ul> 
+
+
+       
+
+
+        </div>
+
+    </div>
+    <div class="transparent-card"></div>
+
+    <div class="card">
+        <h2>Overview attendance based on Department</h2>
+        <div>
+          <label for="xAxisLabel3">Select X-Axis Label:</label>
+          <select id="xAxisLabel3" onchange="initializeChart3_option()">
+            <option value="Attend">Attend</option>
+            <option value="Not Attend">Did Not Attend</option>
+          </select>
+          
+          <select id="startMonth">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="010">October</option>
+            <option value="011">November</option>
+            <option value="012">December</option>
+
+            <!-- Add other months here -->
+          </select>
+
+          <select id="startYear">
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <!-- Add other years here -->
+          </select>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <select id="endMonth">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="010">October</option>
+            <option value="011">November</option>
+            <option value="012">December</option>
+            <!-- Add other months here -->
+          </select>
+
+          <select id="endYear">
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <!-- Add other years here -->
+          </select>
+        </div>
+        <div class="chart-container">
+          <canvas id="workposition" width="800" height="600"></canvas>
+        </div>
+      </div>
+
+
+
+
+      <script>
+        let chart3;
+        let graphData3 = {
+          labels: [], // Array to store the x-axis labels (IDs)
+          datasets: [] // Array to store the bar datasets
+        };
+      
+        // Fetch the dataset from the Flask API
+        fetch('/api/data')
+          .then(response => response.json())
+          .then(data => {
+            // Initialize the chart with the default settings
+            initializeChart3(data);
+          });
+      
+        function initializeChart3(data) {
+
+          const graphxAxisLabel3 = document.getElementById('xAxisLabel3');
+          
+          graphxAxisLabel3.addEventListener('change', () => {
+            const selectedAxisLabel3 = graphxAxisLabel3.value;
+
+
+
+
+            updateChart3(data, selectedAxisLabel3);
+
+          });
+            const startMonth = document.getElementById('startMonth');
+            const endMonth = document.getElementById('endMonth');
+            const startYear = document.getElementById('startYear');
+            const endYear = document.getElementById('endYear');
+
+            startMonth.addEventListener('change', () => {
+            const selectedAxisLabel3 = graphxAxisLabel3.value;
+            updateChart3(data, selectedAxisLabel3);
+
+          });
+
+            endMonth.addEventListener('change', () => {
+            const selectedAxisLabel3 = graphxAxisLabel3.value;
+            updateChart3(data, selectedAxisLabel3);
+
+          });
+            startYear.addEventListener('change', () => {
+            const selectedAxisLabel3 = graphxAxisLabel3.value;
+            updateChart3(data, selectedAxisLabel3);
+
+          });
+            endYear.addEventListener('change', () => {
+            const selectedAxisLabel3 = graphxAxisLabel3.value;
+            updateChart3(data, selectedAxisLabel3);
+
+          });
+
+
+          // Initialize the chart with the default value
+          updateChart3(data, "Attend");
+        }
+      
+        function updateChart3(data, selectedAxisLabel3) {
+          // Count the Attend and DidNotAttend values for each ID
+          const attendCountPerID = {};
+          const didNotAttendCountPerID = {};
+
+          const startMonth = document.getElementById('startMonth').value;
+          const endMonth = document.getElementById('endMonth').value;
+          const startYear = document.getElementById('startYear').value;
+          const endYear = document.getElementById('endYear').value;
+
+
+          const filteredData = data.dataset.filter(dataItem => {
+          const date = new Date(dataItem["Date"]);
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          
+          const startDate = new Date(`${startYear}-${startMonth}-01`);
+          const endDate = new Date(`${endYear}-${endMonth}-01`);
+          
+          return date >= startDate && date <= endDate;
+        });
+
+
+
+
+
+
+
+
+
+          filteredData.forEach(dataItem => {
+            const id = dataItem["work_position"];
+            const attendValue = parseInt(dataItem["Attend"]);
+      
+            // Increment the count for each ID based on Attend or DidNotAttend
+            if (attendValue === 1) {
+              if (attendCountPerID[id]) {
+                attendCountPerID[id] += 1;
+              } else {
+                attendCountPerID[id] = 1;
+              }
+            } else {
+              if (didNotAttendCountPerID[id]) {
+                didNotAttendCountPerID[id] += 1;
+              } else {
+                didNotAttendCountPerID[id] = 1;
+              }
+            }
+          });
+      
+          // Prepare the data for the pie chart
+          graphData3.labels = Object.keys(attendCountPerID); // Array of IDs as labels
+          graphData3.datasets = []; // Clear the datasets array
+      
+          if (selectedAxisLabel3 === "Attend") {
+            graphData3.datasets.push({
+              label: "Attend Count",
+              data: Object.values(attendCountPerID), // Array of Attend counts
+              backgroundColor: getColors3(Object.keys(attendCountPerID).length) // Array of colors for each ID
+            });
+          } else {
+            graphData3.datasets.push({
+              label: "Did Not Attend Count",
+              data: Object.values(didNotAttendCountPerID), // Array of DidNotAttend counts
+              backgroundColor: getColors3(Object.keys(attendCountPerID).length) // Array of colors for each ID
+            });
+          }
+      
+          // Create the pie chart
+          const pieCtx = document.getElementById('workposition').getContext('2d');
+          if (chart3) {
+            chart3.destroy();
+          }
+          chart3 = new Chart(pieCtx, {
+            type: 'bar', // Always a pie chart
+            data: graphData3,
+            options: {
+              // Customize the chart options as needed
+            }
+
+
+          });
+
+
+
+        }
+        function calculateAttendanceStatistics(data) {
+  const workPositions = ["Warehouse Associate", "Quality Control Inspector", "Production Operator", "Maintenance Technician"];
+  const positionTableBody = document.getElementById('position-table-body');
+  positionTableBody.innerHTML = '';
+
+  workPositions.forEach(workPosition => {
+    const positionData = data.dataset.filter(item => item["work_position"] === workPosition);
+    const idSet = new Set();
+    const totalAttendCount = positionData.reduce((total, item) => total + parseInt(item["Attend"]), 0);
+    const totalDataCount = positionData.length;
+    const absenteeismRate = ((totalDataCount - totalAttendCount) / totalDataCount) * 100;
+    positionData.forEach(item => {
+      const id = item["ID"];
+      if (!idSet.has(id)) {
+        idSet.add(id);
+      }
+    });
+    const tableRow = document.createElement('tr');
+    tableRow.innerHTML = `
+      <td>${workPosition}</td>
+      <td>${Array.from(idSet).join(', ')}</td>
+      <td>${totalAttendCount}</td>
+      <td>${absenteeismRate.toFixed(2)}%</td>
+    `;
+
+    positionTableBody.appendChild(tableRow);
+  });
+
+
+
+
+
+}
+
+
+// Fetch the dataset from the Flask API
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => {
+    calculateAttendanceStatistics(data);
+  });
+        // Function to generate an array of colors based on the number of IDs
+        function getColors3(numColors) {
+          const colors = [];
+          for (let i = 0; i < numColors; i++) {
+            const color = getRandomColor3();
+            colors.push(color);
+          }
+          return colors;
+        }
+      
+        // Function to generate a random color
+        function getRandomColor3() {
+          const letters = '0123456789ABCDEF';
+          let color = '#';
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+      </script>
+
+
+
+<div class="card">
+<label for="graphType1"  style="display: none;">Select Graph Type:</label>
+<select id="graphType1" onchange="updateGraph1()" style="display: none;">
+  
+  
+  <option value="bar">Bar Graph</option>
+</select>
+
+
+
+<div>
+  <h2>The attendance of the selected department's employees</h2>
+<label for="xAxisLabel1" style="display: none;">Select X-Axis Label:</label>
+<select id="xAxisLabel1" onchange="updateGraph1()" style="display: none;">
+<option value="Attend">Attend</option>
+<option value="Not Attend">Did Not Attend</option>
+<option value="Both">Both</option>
+</select>
+<select id="startMonth1">
+<option value="01">January</option>
+<option value="02">February</option>
+<option value="03">March</option>
+<option value="04">April</option>
+<option value="05">May</option>
+<option value="06">June</option>
+<option value="07">July</option>
+<option value="08">August</option>
+<option value="09">September</option>
+<option value="010">October</option>
+<option value="011">November</option>
+<option value="012">December</option>
+
+<!-- Add other months here -->
+</select>
+<select id="startYear1">
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+<option value="2017">2017</option>
+<option value="2018">2018</option>
+<!-- Add other years here -->
+</select>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<select id="endMonth1">
+<option value="01">January</option>
+<option value="02">February</option>
+<option value="03">March</option>
+<option value="04">April</option>
+<option value="05">May</option>
+<option value="06">June</option>
+<option value="07">July</option>
+<option value="08">August</option>
+<option value="09">September</option>
+<option value="010">October</option>
+<option value="011">November</option>
+<option value="012">December</option>
+<!-- Add other months here -->
+</select>
+
+<select id="endYear1">
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+<option value="2017">2017</option>
+<option value="2018">2018</option>
+<!-- Add other years here -->
+</select>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+<select id="workPosition1">
+  <option value="Maintenance Technician">Maintenance Technician</option>
+  <option value="Quality Control Inspector">Quality Control Inspector</option>
+  <option value="Warehouse Associater">Warehouse Associate</option>
+  <option value="Production Operator">Production Operator</option>
+</select>
+
+</div>
+<div class="chart-container">
+<canvas id="barChart" width="800" height="600"></canvas>
+</div>
+</div>
+</div>
+
+
+
+
+     
+<script>
+  // Fetch the dataset from the Flask API
+
+  fetch('/api/data')
+    .then(response => response.json())
+    .then(data => {
+      let chart1;
+      let graphData1 = {
+        labels: [], // Array to store the x-axis labels (IDs)
+        datasets: [] // Array to store the bar datasets
+      };
+
+      function updateGraph1() {
+        const startMonth = document.getElementById('startMonth1').value;
+        const endMonth = document.getElementById('endMonth1').value;
+        const startYear = document.getElementById('startYear1').value;
+        const endYear = document.getElementById('endYear1').value;
+        const workPosition = document.getElementById('workPosition1').value;
+
+
+        const graphTypeSelect1 = document.getElementById('graphType1');
+        const graphxAxisLabel1 =document.getElementById('xAxisLabel1'); 
+        const selectedGraphType1 = "bar";
+        const selectedAxisLabel1 = "Both";
+
+
+
+
+        // Count the Attend and DidNotAttend values for each ID
+        const attendCountPerID = {};
+        const didNotAttendCountPerID = {};
+
+        const filteredData = data.dataset.filter(dataItem => {
+        const date = new Date(dataItem["Date"]);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const itemWorkPosition = dataItem["work_position"]; // Get the work position for the current data item
+        
+        const startDate = new Date(`${startYear}-${startMonth}-01`);
+        const endDate = new Date(`${endYear}-${endMonth}-01`);
+        
+        return date >= startDate && date <= endDate && itemWorkPosition === workPosition; // Filter by work position
+      });
+
+        filteredData.forEach(dataItem => {
+          
+          const id = dataItem["ID"];
+          const attendValue = parseInt(dataItem["Attend"]);
+      
+
+          // Increment the count for each ID based on Attend or DidNotAttend
+          if (attendValue === 1) {
+            if (attendCountPerID[id]) {
+              attendCountPerID[id] += 1;
+            } else {
+              attendCountPerID[id] = 1;
+            }
+          } else {
+            if (didNotAttendCountPerID[id]) {
+              didNotAttendCountPerID[id] += 1;
+            } else {
+              didNotAttendCountPerID[id] = 1;
+            }
+          }
+        });
+        // Prepare the data for the bar graph
+        graphData1.labels = Object.keys(attendCountPerID); // Array of IDs as labels
+        graphData1.datasets = []; // Clear the datasets array
+
+        if (selectedAxisLabel1 === "Attend") {
+          graphData1.datasets.push({
+            label: "Attend Count",
+            data: Object.values(attendCountPerID), // Array of Attend counts
+            backgroundColor: getColors(Object.keys(attendCountPerID).length) // Array of colors for each ID
+          });
+        } else if (selectedAxisLabel1 === "Both" && selectedGraphType1 === "pie") {
+          console.log("Data fetched successfully");
+          graphData1.datasets.push({
+            label: "Attend Count",
+            data: Object.values(attendCountPerID), // Array of Attend counts
+            backgroundColor: getColors(Object.keys(attendCountPerID).length) // Array of colors for each ID
+          });
+
+          graphData1.datasets.push({
+            label: "Did Not Attend Count",
+            data: Object.values(didNotAttendCountPerID), // Array of DidNotAttend counts
+            backgroundColor: getColors(Object.keys(attendCountPerID).length) // Array of colors for each ID
+          });
+        } else if (selectedAxisLabel1 === "Both" && selectedGraphType1 === "bar"){
+            console.log("Data fetched successfully");
+            graphData1.datasets.push({
+              label: "Attend Count",
+              data: Object.values(attendCountPerID), // Array of Attend counts
+              backgroundColor: 'rgba(255, 99, 132, 0.5)' // Array of colors for each ID
+            });
+            graphData1.datasets.push({
+              label: "Did Not Attend Count",
+              data: Object.values(didNotAttendCountPerID), // Array of DidNotAttend counts
+              backgroundColor: 'rgba(75, 192, 192, 0.5)' // Array of colors for each ID
+            });
+
+
+        }else {
+          graphData1.datasets.push({
+            label: "Did Not Attend Count",
+            data: Object.values(didNotAttendCountPerID), // Array of DidNotAttend counts
+            backgroundColor: getColors(Object.keys(attendCountPerID).length) // Array of colors for each ID
+          });
+        }
+        // Sort the labels and datasets arrays based on the values in descending order
+        graphData1.labels.sort((a, b) => attendCountPerID[b] - attendCountPerID[a]);
+        graphData1.datasets.forEach(dataset => {
+          dataset.data.sort((a, b) => b - a);
+        });
+        // Destroy the existing chart if it exists
+        if (chart1) {
+          chart1.destroy();
+        }
+
+        // Check if the graph should be closed
+        if (selectedGraphType1 === "") {
+          return; // Exit the function and do not create the chart
+        }
+        if (selectedAxisLabel1 === "") {
+          return; // Exit the function and do not create the chart
+        }
+
+        // Create the bar chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        chart1 = new Chart(barCtx, {
+          type: selectedGraphType1,
+          data: graphData1,
+          options: {
+            // Customize the chart options as needed
+          }
+        });
+      }
+
+      // Add event listener to the select elements
+      const graphTypeSelect1 = document.getElementById('graphType1');
+      const graphxAxisLabel1 = document.getElementById('xAxisLabel1');
+      graphTypeSelect1.addEventListener('change', updateGraph1);
+      graphxAxisLabel1.addEventListener('change', updateGraph1);
+
+      const startMonth = document.getElementById('startMonth1');
+      const endMonth = document.getElementById('endMonth1');
+      const startYear = document.getElementById('startYear1');
+      const endYear = document.getElementById('endYear1');
+      startMonth.addEventListener('change', updateGraph1);
+      endMonth.addEventListener('change', updateGraph1);
+      startYear.addEventListener('change', updateGraph1);
+      endYear.addEventListener('change', updateGraph1);
+
+      const workPositionSelect1 = document.getElementById('workPosition1');
+      workPositionSelect1.addEventListener('change', updateGraph1);
+
+
+
+      // Initial creation of the chart with the default graph type
+      updateGraph1();
+    });
+  // Function to generate an array of colors based on the number of IDs
+  function getColors(numColors) {
+    const colors = [];
+    for (let i = 0; i < numColors; i++) {
+      const color = getRandomColor();
+      colors.push(color);
+    }
+    return colors;
+  }
+
+  // Function to generate a random color
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+</script>
+<p></p>
+
+<!-- third graph -->
+<!-- Add the Chart.js library for line chart support -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Work Position Attendance Statistics</h2>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table id="position-table">
+              <thead>
+                <tr>
+                  <th>Work Position</th>
+                  <th>ID</th>
+                  <th>Total Attend</th>
+                  <th>Absenteeism Rate %</th>
+                </tr>
+              </thead>
+              <tbody id="position-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <p></p>
+      -->
+
+
+    {% endblock %}
